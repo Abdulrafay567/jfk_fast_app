@@ -1,0 +1,8 @@
+fastapi
+gradio
+torch
+transformers
+wordcloud
+pydantic
+uvicorn
+gliner
