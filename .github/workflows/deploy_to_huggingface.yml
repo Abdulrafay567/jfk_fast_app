@@ -1,0 +1,37 @@
+name: Deploy to Hugging Face
+
+on:
+  push:
+    branches:
+      - main  # Runs when code is pushed to main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install Git LFS
+        run: |
+          sudo apt-get install git-lfs
+          git lfs install
+
+      - name: Clone Hugging Face Space
+        run: git clone https://huggingface.co/spaces/Abdullraffayy/jfk_assassination_records_app space
+
+
+      - name: Copy new files to Space
+        run: rsync -av --exclude='.git' . space/
+
+      - name: Push changes to Hugging Face
+        run: |
+          cd space
+          git config --global user.email "you@example.com"
+          git config --global user.name "GitHub Actions Bot"
+          git add .
+          git commit -m "Auto-deploy from GitHub"
+          git push https://USER:$HF_TOKEN@huggingface.co/spaces/YOUR_HF_USERNAME/YOUR_HF_SPACE_NAME main
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}

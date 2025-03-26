@@ -31,6 +31,9 @@ pip-delete-this-directory.txt
 
 # Generated files
 wordcloud.png
+wordcloud_output
+extracted_entities
+entities
 
 # Gradio cache & config
 gradio_cached_examples/

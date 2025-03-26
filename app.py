@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from fastapi.responses import FileResponse
 import gradio as gr
 from entity_recognition import  extract_entities   # Import entity extraction function
-from entity_recognition import generate_word_cloud 
+#from entity_recognition import generate_word_cloud 
 from wordcloud import WordCloud
 from summarization import summarizer
 import os
