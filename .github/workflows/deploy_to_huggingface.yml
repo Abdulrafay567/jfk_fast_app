@@ -21,9 +21,17 @@ jobs:
       - name: Clone Hugging Face Space
         run: git clone https://huggingface.co/spaces/Abdullraffayy/jfk_assassination_records_app space
 
-
-      - name: Copy new files to Space
-        run: rsync -av --exclude='.git' . space/
+      - name: Copy new files to Space (Fix rsync issue)
+        run: |
+          retries=3
+          for ((i=1;i<=retries;i++)); do
+            rsync -av --ignore-missing-args --delete --exclude='.git' . space/
+            if [ $? -eq 0 ]; then
+              break
+            fi
+            echo "Retry $i/$retries failed, retrying..."
+            sleep 5
+          done
 
       - name: Push changes to Hugging Face
         run: |
@@ -31,7 +39,7 @@ jobs:
           git config --global user.email "you@example.com"
           git config --global user.name "GitHub Actions Bot"
           git add .
-          git commit -m "Auto-deploy from GitHub"
-          git push https://USER:$HF_TOKEN@huggingface.co/spaces/YOUR_HF_USERNAME/YOUR_HF_SPACE_NAME main
+          git commit -m "Auto-deploy from GitHub" || echo "No changes to commit"
+          git push https://Abdullraffayy:$HF_TOKEN@huggingface.co/spaces/Abdullraffayy/jfk_assassination_records_app main
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
