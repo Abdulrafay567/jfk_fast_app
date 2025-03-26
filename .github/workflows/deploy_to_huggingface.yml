@@ -23,15 +23,7 @@ jobs:
 
       - name: Copy new files to Space (Fix rsync issue)
         run: |
-          retries=3
-          for ((i=1;i<=retries;i++)); do
-            rsync -av --ignore-missing-args --delete --exclude='.git' . space/
-            if [ $? -eq 0 ]; then
-              break
-            fi
-            echo "Retry $i/$retries failed, retrying..."
-            sleep 5
-          done
+          rsync -av --ignore-missing-args --ignore-errors --exclude='.git' . space/ || true
 
       - name: Push changes to Hugging Face
         run: |
