@@ -1,0 +1,6 @@
+person:ROY W. FORSLUND, JOHN F. KENNEDY
+
+organization:JAWAVE DIRECTOR SAS
+
+document:OF 2,05 2, R WAVE-7893
+

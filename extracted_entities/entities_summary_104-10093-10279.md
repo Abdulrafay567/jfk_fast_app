@@ -1,0 +1,12 @@
+person:JOHN F. KENNEDY
+
+document:SECRET ROUTING 1, CLASSIFIED MESSAGE 24
+
+role:DIRECTOR
+
+location:MEXICO CITY
+
+cryptonym:FI, CI, CI-IC 2, CA-O 4, CI/DA, CI/OPS, CA/PEG, CA 2, WA 8
+
+date:2 NOV 63
+

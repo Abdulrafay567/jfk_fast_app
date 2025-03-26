@@ -1,0 +1,6 @@
+date:13-5-13-213-25, 13-2-13
+
+person:JOHN F. KENNEDY
+
+document:ASSASSINATION RECORDS ACT OF 1992
+

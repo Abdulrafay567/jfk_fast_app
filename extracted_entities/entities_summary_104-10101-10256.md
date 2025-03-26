@@ -1,0 +1,2 @@
+person:JOHN F. KENNEDy
+

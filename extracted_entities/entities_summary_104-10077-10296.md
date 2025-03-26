@@ -1,0 +1,2 @@
+person:John F. KENNEDY
+

@@ -1,0 +1,8 @@
+date:2025
+
+person:JOHN F. KENNEDY
+
+document:ASSASSINATION RECORDS ACT of 1992
+
+cryptonym:1104-10076-10153
+

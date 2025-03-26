@@ -1,0 +1,4 @@
+person:Valerie VLADIMIROVICH KOSTIKOV, Lee Harvey OSWALD
+
+date:1978, 1961-71
+

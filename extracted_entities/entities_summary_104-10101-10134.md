@@ -1,0 +1,12 @@
+person:Manuel kragpr, Manuel kragPR
+
+document:ASSASSINATION RECORDS ACT OF 1992
+
+operation:STATION OPERATIONS, CA/95
+
+date:5 December 1963
+
+location:MONT 8437, MEXI, CA/PESCA 2, PARIS/LCPIPTIFROM, MEXICO CITY
+
+organization:DEMOCRATIC UNIORS, CNE
+

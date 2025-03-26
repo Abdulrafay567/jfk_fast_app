@@ -1,0 +1,8 @@
+person:John F. KENNEDY
+
+document:ASSASSINATION RECORDS ACT of 1992
+
+location:FI, WE 6, SAS 8, MADR, IDEN B - GILBERTO (LIWAY), PURUMEN (QUOLA), REF AVE, KEYWAY
+
+organization:CI/OPS
+

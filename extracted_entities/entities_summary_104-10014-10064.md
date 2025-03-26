@@ -1,0 +1,4 @@
+date:14 SEP 93, 20 NOV 91
+
+person:NIKONOV, LEE HARVEY, BAKATIN
+

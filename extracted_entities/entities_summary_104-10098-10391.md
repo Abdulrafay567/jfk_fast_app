@@ -1,0 +1,8 @@
+person:JOHN F. KENNEDY, CKASSAY LPSHRINK, GEORGE STEENS
+
+document:Classified MESSAGE
+
+location:MEXI, City EE 6 C1/CA, CCS 3, IN 85185, CADALETRACECHET
+
+organization:ISSUING OFFICE
+

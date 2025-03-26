@@ -1,0 +1,4 @@
+person:ROY W. FORSLUND, JOHN F. KENNEDY
+
+date:DECEMBER 63
+

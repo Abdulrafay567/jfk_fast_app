@@ -1,0 +1,12 @@
+date:30 SEPT 1963
+
+nationality:MEXICO
+
+location:ROME
+
+role:DIRECTOR
+
+document:ASSASSINATION RECORDS ACT OF 1992, C/WE 2. 2025
+
+person:JOHN F. KENNEDY
+

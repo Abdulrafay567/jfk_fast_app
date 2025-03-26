@@ -1,0 +1,6 @@
+location:MERIDA 23SC, MEXICO CITY, MEXI
+
+document:104-10098-10328
+
+person:JOHN F. KENNEDY, SAID WIFE
+

@@ -1,0 +1,4 @@
+person:AYSHATTER, PRESIDENT JOHN, AMSTASH-1, A-1
+
+date:4 NOV
+
