@@ -19,7 +19,7 @@ import pygraphviz as pgv
 import re
 import os
 
-def wrap_label(label, max_length=20):
+def wrap_label(label, max_length=15):
     """Wrap a label into multiple lines if it exceeds max_length characters."""
     words = label.split()
     lines = []
@@ -42,21 +42,22 @@ def generate_mermaid_mindmap(text):
     print("Extracted Entities:", entities)
     
     # Create a directed graph with size attributes
-    G = pgv.AGraph(directed=True, rankdir="TB", bgcolor="white")
+    G = pgv.AGraph(directed=True, rankdir="LR", bgcolor="white")  # Change to left-to-right layout
+    G.graph_attr['splines'] = "curved"  # Draw edges as curves
     
     # Set graph attributes to control the size of the output image
     G.graph_attr['size'] = "30,20"  # Width=30 inches, Height=20 inches
     G.graph_attr['dpi'] = "150"     # DPI for higher resolution (default is 96)
     G.graph_attr['ratio'] = "fill"  # Ensure the graph fills the specified size
     G.graph_attr['pad'] = "0.5"     # Add padding around the graph (in inches)
-    G.graph_attr['ranksep'] = "5.0"  # Increase vertical spacing between ranks (in inches)
-    G.graph_attr['nodesep'] = "2.0"  # Increase horizontal spacing between nodes (in inches)
+    G.graph_attr['ranksep'] = "8.0"  # Further increase vertical spacing between ranks (in inches)
+    G.graph_attr['nodesep'] = "3.0"  # Further increase horizontal spacing between nodes (in inches)
     
     # Set default node and edge attributes for better readability
-    G.node_attr['fontsize'] = "24"  # Increase font size for node labels
-    G.node_attr['width'] = "4.0"    # Increase node width (in inches)
-    G.node_attr['height'] = "2.0"   # Increase node height (in inches)
-    G.edge_attr['arrowsize'] = "2.5"  # Increase arrow size for edges
+    G.node_attr['fontsize'] = "28"  # Further increase font size for node labels
+    G.node_attr['width'] = "5.0"    # Further increase node width (in inches)
+    G.node_attr['height'] = "2.5"   # Further increase node height (in inches)
+    G.edge_attr['arrowsize'] = "3.0"  # Further increase arrow size for edges
     
     # Add root node
     G.add_node("Document", shape="ellipse", style="filled", fillcolor="lightblue", label=wrap_label("Document"))
@@ -107,7 +108,7 @@ def generate_mermaid_mindmap(text):
     output_path = os.path.join(output_dir, "mindmap.png")
     G.draw(output_path, format="png", prog="dot")  # 'dot' is the layout engine
     
-    return output_path
+    return [output_path]  # Return a list for gr.Gallery
 # import networkx as nx
 # import matplotlib.pyplot as plt
 # import re
@@ -228,7 +229,7 @@ with gr.Blocks() as iface:
         output_wordcloud = gr.Image(label=" Word Cloud")
     with gr.Row():
         generate_mindmap_button = gr.Button("Generate Mind Map")
-        output_mindmap = gr.Image(label="Mind Map", height=600, width=1200)  # Use HTML instead of Textbox
+        output_mindmap = gr.Gallery(label="Mind Map", height=1000) # Use HTML instead of Textbox
 
     generate_mindmap_button.click(
         fn=generate_mermaid_mindmap,
