@@ -19,61 +19,129 @@ import pygraphviz as pgv
 import re
 import os
 
+# def generate_mermaid_mindmap(text):
+#     entities = extract_entities(text)
+#     print("Extracted Entities:", entities)
+    
+#     # Create a directed graph
+#     G = pgv.AGraph(directed=True, rankdir="TB", bgcolor="white")
+    
+#     # Add root node
+#     G.add_node("Document", shape="ellipse", style="filled", fillcolor="lightblue", label="Document")
+    
+#     # Keep track of node names to ensure uniqueness
+#     node_counter = {}
+    
+#     for category, values in entities.items():
+#         # Sanitize category name for the node identifier
+#         safe_category = re.sub(r'[^a-zA-Z0-9_]', '', category)
+#         if not safe_category or safe_category.startswith('.'):
+#             safe_category = "Category_" + str(hash(category) % 10000)
+        
+#         # Add category node
+#         G.add_node(safe_category, shape="box", style="filled", fillcolor="lightgreen", label=category)
+#         G.add_edge("Document", safe_category)
+        
+#         for value in values:
+#             # Clean up the value
+#             cleaned_value = value.strip().rstrip(')').lstrip(',')
+#             if not cleaned_value:
+#                 cleaned_value = "Unknown"
+            
+#             # Truncate long values for readability (max 50 characters)
+#             if len(cleaned_value) > 50:
+#                 cleaned_value = cleaned_value[:47] + "..."
+            
+#             # Sanitize value name for the node identifier
+#             safe_value = re.sub(r'[^a-zA-Z0-9_]', '', cleaned_value)
+#             if not safe_value:
+#                 safe_value = "Value_" + str(hash(cleaned_value) % 10000)
+            
+#             # Ensure unique node name
+#             node_key = safe_value
+#             node_counter[node_key] = node_counter.get(node_key, 0) + 1
+#             if node_counter[node_key] > 1:
+#                 safe_value = f"{safe_value}_{node_counter[node_key]}"
+            
+#             # Add value node
+#             G.add_node(safe_value, shape="ellipse", style="filled", fillcolor="lightyellow", label=cleaned_value)
+#             G.add_edge(safe_category, safe_value)
+    
+#     # Ensure the output directory exists
+#     output_dir = "mindmap_output"
+#     os.makedirs(output_dir, exist_ok=True)
+    
+#     # Render the graph to a PNG file
+#     output_path = os.path.join(output_dir, "mindmap.png")
+#     G.draw(output_path, format="png", prog="dot")  # 'dot' is the layout engine
+    
+#     return output_path
+
+import networkx as nx
+import matplotlib.pyplot as plt
+import re
+import os
+
 def generate_mermaid_mindmap(text):
     entities = extract_entities(text)
     print("Extracted Entities:", entities)
     
     # Create a directed graph
-    G = pgv.AGraph(directed=True, rankdir="TB", bgcolor="white")
+    G = nx.DiGraph()
     
     # Add root node
-    G.add_node("Document", shape="ellipse", style="filled", fillcolor="lightblue", label="Document")
+    G.add_node("Document")
     
     # Keep track of node names to ensure uniqueness
     node_counter = {}
     
     for category, values in entities.items():
-        # Sanitize category name for the node identifier
         safe_category = re.sub(r'[^a-zA-Z0-9_]', '', category)
         if not safe_category or safe_category.startswith('.'):
             safe_category = "Category_" + str(hash(category) % 10000)
-        
-        # Add category node
-        G.add_node(safe_category, shape="box", style="filled", fillcolor="lightgreen", label=category)
+        G.add_node(safe_category)
         G.add_edge("Document", safe_category)
         
         for value in values:
-            # Clean up the value
             cleaned_value = value.strip().rstrip(')').lstrip(',')
             if not cleaned_value:
                 cleaned_value = "Unknown"
-            
-            # Truncate long values for readability (max 50 characters)
             if len(cleaned_value) > 50:
                 cleaned_value = cleaned_value[:47] + "..."
-            
-            # Sanitize value name for the node identifier
             safe_value = re.sub(r'[^a-zA-Z0-9_]', '', cleaned_value)
             if not safe_value:
                 safe_value = "Value_" + str(hash(cleaned_value) % 10000)
-            
-            # Ensure unique node name
             node_key = safe_value
             node_counter[node_key] = node_counter.get(node_key, 0) + 1
             if node_counter[node_key] > 1:
                 safe_value = f"{safe_value}_{node_counter[node_key]}"
-            
-            # Add value node
-            G.add_node(safe_value, shape="ellipse", style="filled", fillcolor="lightyellow", label=cleaned_value)
+            G.add_node(safe_value)
             G.add_edge(safe_category, safe_value)
+    
+    # Create a layout for the graph
+    pos = nx.spring_layout(G)
+    
+    # Draw the graph with a larger figure size and higher DPI
+    plt.figure(figsize=(20, 15), dpi=150)  # Increased size to 20x15 inches, DPI to 150
+    node_colors = []
+    for node in G.nodes():
+        if node == "Document":
+            node_colors.append("lightblue")
+        elif node in [safe_category for category in entities.keys() for safe_category in [re.sub(r'[^a-zA-Z0-9_]', '', category)]]:
+            node_colors.append("lightgreen")
+        else:
+            node_colors.append("lightyellow")
+    
+    nx.draw(G, pos, with_labels=True, node_color=node_colors, node_size=3000, font_size=12, font_weight="bold", arrows=True)
     
     # Ensure the output directory exists
     output_dir = "mindmap_output"
     os.makedirs(output_dir, exist_ok=True)
     
-    # Render the graph to a PNG file
+    # Save the graph to a PNG file
     output_path = os.path.join(output_dir, "mindmap.png")
-    G.draw(output_path, format="png", prog="dot")  # 'dot' is the layout engine
+    plt.savefig(output_path, format="png", bbox_inches="tight")
+    plt.close()
     
     return output_path
 @app.post("/summarize")
@@ -129,7 +197,7 @@ with gr.Blocks() as iface:
         output_wordcloud = gr.Image(label=" Word Cloud")
     with gr.Row():
         generate_mindmap_button = gr.Button("Generate Mind Map")
-        output_mindmap = gr.Image(label="Mind Map")  # Use HTML instead of Textbox
+        output_mindmap = gr.Image(label="Mind Map", height=600, width=800)  # Use HTML instead of Textbox
 
     generate_mindmap_button.click(
         fn=generate_mermaid_mindmap,
