@@ -19,131 +19,144 @@ import pygraphviz as pgv
 import re
 import os
 
-# def generate_mermaid_mindmap(text):
-#     entities = extract_entities(text)
-#     print("Extracted Entities:", entities)
-    
-#     # Create a directed graph
-#     G = pgv.AGraph(directed=True, rankdir="TB", bgcolor="white")
-    
-#     # Add root node
-#     G.add_node("Document", shape="ellipse", style="filled", fillcolor="lightblue", label="Document")
-    
-#     # Keep track of node names to ensure uniqueness
-#     node_counter = {}
-    
-#     for category, values in entities.items():
-#         # Sanitize category name for the node identifier
-#         safe_category = re.sub(r'[^a-zA-Z0-9_]', '', category)
-#         if not safe_category or safe_category.startswith('.'):
-#             safe_category = "Category_" + str(hash(category) % 10000)
-        
-#         # Add category node
-#         G.add_node(safe_category, shape="box", style="filled", fillcolor="lightgreen", label=category)
-#         G.add_edge("Document", safe_category)
-        
-#         for value in values:
-#             # Clean up the value
-#             cleaned_value = value.strip().rstrip(')').lstrip(',')
-#             if not cleaned_value:
-#                 cleaned_value = "Unknown"
-            
-#             # Truncate long values for readability (max 50 characters)
-#             if len(cleaned_value) > 50:
-#                 cleaned_value = cleaned_value[:47] + "..."
-            
-#             # Sanitize value name for the node identifier
-#             safe_value = re.sub(r'[^a-zA-Z0-9_]', '', cleaned_value)
-#             if not safe_value:
-#                 safe_value = "Value_" + str(hash(cleaned_value) % 10000)
-            
-#             # Ensure unique node name
-#             node_key = safe_value
-#             node_counter[node_key] = node_counter.get(node_key, 0) + 1
-#             if node_counter[node_key] > 1:
-#                 safe_value = f"{safe_value}_{node_counter[node_key]}"
-            
-#             # Add value node
-#             G.add_node(safe_value, shape="ellipse", style="filled", fillcolor="lightyellow", label=cleaned_value)
-#             G.add_edge(safe_category, safe_value)
-    
-#     # Ensure the output directory exists
-#     output_dir = "mindmap_output"
-#     os.makedirs(output_dir, exist_ok=True)
-    
-#     # Render the graph to a PNG file
-#     output_path = os.path.join(output_dir, "mindmap.png")
-#     G.draw(output_path, format="png", prog="dot")  # 'dot' is the layout engine
-    
-#     return output_path
-
-import networkx as nx
-import matplotlib.pyplot as plt
-import re
-import os
 
 def generate_mermaid_mindmap(text):
     entities = extract_entities(text)
     print("Extracted Entities:", entities)
     
-    # Create a directed graph
-    G = nx.DiGraph()
+    # Create a directed graph with size attributes
+    G = pgv.AGraph(directed=True, rankdir="TB", bgcolor="white")
+    
+    # Set graph attributes to control the size of the output image
+    G.graph_attr['size'] = "20,15"  # Width=20 inches, Height=15 inches (adjust as needed)
+    G.graph_attr['dpi'] = "150"     # Increase DPI for higher resolution (default is 96)
+    G.graph_attr['ratio'] = "fill"  # Ensure the graph fills the specified size
+    G.graph_attr['pad'] = "0.5"     # Add padding around the graph (in inches)
+    
+    # Set default node and edge attributes for better readability
+    G.node_attr['fontsize'] = "16"  # Increase font size for node labels
+    G.node_attr['width'] = "2.0"    # Increase node width (in inches)
+    G.node_attr['height'] = "1.0"   # Increase node height (in inches)
+    G.edge_attr['arrowsize'] = "1.5"  # Increase arrow size for edges
     
     # Add root node
-    G.add_node("Document")
+    G.add_node("Document", shape="ellipse", style="filled", fillcolor="lightblue", label="Document")
     
     # Keep track of node names to ensure uniqueness
     node_counter = {}
     
     for category, values in entities.items():
+        # Sanitize category name for the node identifier
         safe_category = re.sub(r'[^a-zA-Z0-9_]', '', category)
         if not safe_category or safe_category.startswith('.'):
             safe_category = "Category_" + str(hash(category) % 10000)
-        G.add_node(safe_category)
+        
+        # Add category node
+        G.add_node(safe_category, shape="box", style="filled", fillcolor="lightgreen", label=category)
         G.add_edge("Document", safe_category)
         
         for value in values:
+            # Clean up the value
             cleaned_value = value.strip().rstrip(')').lstrip(',')
             if not cleaned_value:
                 cleaned_value = "Unknown"
+            
+            # Truncate long values for readability (max 50 characters)
             if len(cleaned_value) > 50:
                 cleaned_value = cleaned_value[:47] + "..."
+            
+            # Sanitize value name for the node identifier
             safe_value = re.sub(r'[^a-zA-Z0-9_]', '', cleaned_value)
             if not safe_value:
                 safe_value = "Value_" + str(hash(cleaned_value) % 10000)
+            
+            # Ensure unique node name
             node_key = safe_value
             node_counter[node_key] = node_counter.get(node_key, 0) + 1
             if node_counter[node_key] > 1:
                 safe_value = f"{safe_value}_{node_counter[node_key]}"
-            G.add_node(safe_value)
+            
+            # Add value node
+            G.add_node(safe_value, shape="ellipse", style="filled", fillcolor="lightyellow", label=cleaned_value)
             G.add_edge(safe_category, safe_value)
-    
-    # Create a layout for the graph
-    pos = nx.spring_layout(G)
-    
-    # Draw the graph with a larger figure size and higher DPI
-    plt.figure(figsize=(20, 15), dpi=150)  # Increased size to 20x15 inches, DPI to 150
-    node_colors = []
-    for node in G.nodes():
-        if node == "Document":
-            node_colors.append("lightblue")
-        elif node in [safe_category for category in entities.keys() for safe_category in [re.sub(r'[^a-zA-Z0-9_]', '', category)]]:
-            node_colors.append("lightgreen")
-        else:
-            node_colors.append("lightyellow")
-    
-    nx.draw(G, pos, with_labels=True, node_color=node_colors, node_size=3000, font_size=12, font_weight="bold", arrows=True)
     
     # Ensure the output directory exists
     output_dir = "mindmap_output"
     os.makedirs(output_dir, exist_ok=True)
     
-    # Save the graph to a PNG file
+    # Render the graph to a PNG file
     output_path = os.path.join(output_dir, "mindmap.png")
-    plt.savefig(output_path, format="png", bbox_inches="tight")
-    plt.close()
+    G.draw(output_path, format="png", prog="dot")  # 'dot' is the layout engine
     
     return output_path
+
+# import networkx as nx
+# import matplotlib.pyplot as plt
+# import re
+# import os
+
+# def generate_mermaid_mindmap(text):
+#     entities = extract_entities(text)
+#     print("Extracted Entities:", entities)
+    
+#     # Create a directed graph
+#     G = nx.DiGraph()
+    
+#     # Add root node
+#     G.add_node("Document")
+    
+#     # Keep track of node names to ensure uniqueness
+#     node_counter = {}
+    
+#     for category, values in entities.items():
+#         safe_category = re.sub(r'[^a-zA-Z0-9_]', '', category)
+#         if not safe_category or safe_category.startswith('.'):
+#             safe_category = "Category_" + str(hash(category) % 10000)
+#         G.add_node(safe_category)
+#         G.add_edge("Document", safe_category)
+        
+#         for value in values:
+#             cleaned_value = value.strip().rstrip(')').lstrip(',')
+#             if not cleaned_value:
+#                 cleaned_value = "Unknown"
+#             if len(cleaned_value) > 50:
+#                 cleaned_value = cleaned_value[:47] + "..."
+#             safe_value = re.sub(r'[^a-zA-Z0-9_]', '', cleaned_value)
+#             if not safe_value:
+#                 safe_value = "Value_" + str(hash(cleaned_value) % 10000)
+#             node_key = safe_value
+#             node_counter[node_key] = node_counter.get(node_key, 0) + 1
+#             if node_counter[node_key] > 1:
+#                 safe_value = f"{safe_value}_{node_counter[node_key]}"
+#             G.add_node(safe_value)
+#             G.add_edge(safe_category, safe_value)
+    
+#     # Create a layout for the graph
+#     pos = nx.spring_layout(G)
+    
+#     # Draw the graph with a larger figure size and higher DPI
+#     plt.figure(figsize=(20, 15), dpi=150)  # Increased size to 20x15 inches, DPI to 150
+#     node_colors = []
+#     for node in G.nodes():
+#         if node == "Document":
+#             node_colors.append("lightblue")
+#         elif node in [safe_category for category in entities.keys() for safe_category in [re.sub(r'[^a-zA-Z0-9_]', '', category)]]:
+#             node_colors.append("lightgreen")
+#         else:
+#             node_colors.append("lightyellow")
+    
+#     nx.draw(G, pos, with_labels=True, node_color=node_colors, node_size=3000, font_size=12, font_weight="bold", arrows=True)
+    
+#     # Ensure the output directory exists
+#     output_dir = "mindmap_output"
+#     os.makedirs(output_dir, exist_ok=True)
+    
+#     # Save the graph to a PNG file
+#     output_path = os.path.join(output_dir, "mindmap.png")
+#     plt.savefig(output_path, format="png", bbox_inches="tight")
+#     plt.close()
+    
+#     return output_path
 @app.post("/summarize")
 def summarize_text(request: TextRequest):
     chunks = [request.text[i:i+500] for i in range(0, len(request.text), 500)]
