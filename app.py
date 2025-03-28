@@ -19,7 +19,6 @@ import pygraphviz as pgv
 import re
 import os
 
-
 def generate_mermaid_mindmap(text):
     entities = extract_entities(text)
     print("Extracted Entities:", entities)
@@ -28,16 +27,18 @@ def generate_mermaid_mindmap(text):
     G = pgv.AGraph(directed=True, rankdir="TB", bgcolor="white")
     
     # Set graph attributes to control the size of the output image
-    G.graph_attr['size'] = "20,15"  # Width=20 inches, Height=15 inches (adjust as needed)
-    G.graph_attr['dpi'] = "150"     # Increase DPI for higher resolution (default is 96)
+    G.graph_attr['size'] = "30,20"  # Width=30 inches, Height=20 inches
+    G.graph_attr['dpi'] = "150"     # DPI for higher resolution (default is 96)
     G.graph_attr['ratio'] = "fill"  # Ensure the graph fills the specified size
     G.graph_attr['pad'] = "0.5"     # Add padding around the graph (in inches)
+    G.graph_attr['ranksep'] = "3.0"  # Increase vertical spacing between ranks (in inches)
+    G.graph_attr['nodesep'] = "1.5"  # Increase horizontal spacing between nodes (in inches)
     
     # Set default node and edge attributes for better readability
-    G.node_attr['fontsize'] = "16"  # Increase font size for node labels
-    G.node_attr['width'] = "2.0"    # Increase node width (in inches)
-    G.node_attr['height'] = "1.0"   # Increase node height (in inches)
-    G.edge_attr['arrowsize'] = "1.5"  # Increase arrow size for edges
+    G.node_attr['fontsize'] = "20"  # Increase font size for node labels
+    G.node_attr['width'] = "3.0"    # Increase node width (in inches)
+    G.node_attr['height'] = "1.5"   # Increase node height (in inches)
+    G.edge_attr['arrowsize'] = "2.0"  # Increase arrow size for edges
     
     # Add root node
     G.add_node("Document", shape="ellipse", style="filled", fillcolor="lightblue", label="Document")
@@ -89,7 +90,6 @@ def generate_mermaid_mindmap(text):
     G.draw(output_path, format="png", prog="dot")  # 'dot' is the layout engine
     
     return output_path
-
 # import networkx as nx
 # import matplotlib.pyplot as plt
 # import re
@@ -210,7 +210,7 @@ with gr.Blocks() as iface:
         output_wordcloud = gr.Image(label=" Word Cloud")
     with gr.Row():
         generate_mindmap_button = gr.Button("Generate Mind Map")
-        output_mindmap = gr.Image(label="Mind Map", height=600, width=800)  # Use HTML instead of Textbox
+        output_mindmap = gr.Image(label="Mind Map", height=600, width=1200)  # Use HTML instead of Textbox
 
     generate_mindmap_button.click(
         fn=generate_mermaid_mindmap,
