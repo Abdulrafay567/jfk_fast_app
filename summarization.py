@@ -1,6 +1,5 @@
 import os
 from transformers import pipeline, BartTokenizer
-from entity_recognition import generate_word_cloud, extract_entities
 from pydantic import BaseModel
 # Initialize the summarization pipeline
 summarizer = pipeline("summarization", model="facebook/bart-large-cnn")  # device=-1 for CPU

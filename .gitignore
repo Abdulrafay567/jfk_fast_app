@@ -34,6 +34,8 @@ wordcloud.png
 wordcloud_output
 extracted_entities
 entities
+mindmap.png
+mindmap_output
 
 # Gradio cache & config
 gradio_cached_examples/

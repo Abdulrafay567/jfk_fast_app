@@ -6,3 +6,5 @@ wordcloud
 pydantic
 uvicorn
 gliner
+pygraphviz
+graphviz
