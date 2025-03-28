@@ -17,6 +17,7 @@ class TextRequest(BaseModel):
     text: str
 import pygraphviz as pgv
 import re
+import os
 
 def generate_mermaid_mindmap(text):
     entities = extract_entities(text)
@@ -66,8 +67,12 @@ def generate_mermaid_mindmap(text):
             G.add_node(safe_value, shape="ellipse", style="filled", fillcolor="lightyellow", label=cleaned_value)
             G.add_edge(safe_category, safe_value)
     
+    # Ensure the output directory exists
+    output_dir = "mindmap_output"
+    os.makedirs(output_dir, exist_ok=True)
+    
     # Render the graph to a PNG file
-    output_path = "mindmap.png"
+    output_path = os.path.join(output_dir, "mindmap.png")
     G.draw(output_path, format="png", prog="dot")  # 'dot' is the layout engine
     
     return output_path
