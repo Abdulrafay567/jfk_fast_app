@@ -19,6 +19,24 @@ import pygraphviz as pgv
 import re
 import os
 
+def wrap_label(label, max_length=20):
+    """Wrap a label into multiple lines if it exceeds max_length characters."""
+    words = label.split()
+    lines = []
+    current_line = []
+    current_length = 0
+    for word in words:
+        if current_length + len(word) <= max_length:
+            current_line.append(word)
+            current_length += len(word) + 1
+        else:
+            lines.append(" ".join(current_line))
+            current_line = [word]
+            current_length = len(word) + 1
+    if current_line:
+        lines.append(" ".join(current_line))
+    return "\\n".join(lines)
+
 def generate_mermaid_mindmap(text):
     entities = extract_entities(text)
     print("Extracted Entities:", entities)
@@ -31,17 +49,17 @@ def generate_mermaid_mindmap(text):
     G.graph_attr['dpi'] = "150"     # DPI for higher resolution (default is 96)
     G.graph_attr['ratio'] = "fill"  # Ensure the graph fills the specified size
     G.graph_attr['pad'] = "0.5"     # Add padding around the graph (in inches)
-    G.graph_attr['ranksep'] = "3.0"  # Increase vertical spacing between ranks (in inches)
-    G.graph_attr['nodesep'] = "1.5"  # Increase horizontal spacing between nodes (in inches)
+    G.graph_attr['ranksep'] = "5.0"  # Increase vertical spacing between ranks (in inches)
+    G.graph_attr['nodesep'] = "2.0"  # Increase horizontal spacing between nodes (in inches)
     
     # Set default node and edge attributes for better readability
-    G.node_attr['fontsize'] = "20"  # Increase font size for node labels
-    G.node_attr['width'] = "3.0"    # Increase node width (in inches)
-    G.node_attr['height'] = "1.5"   # Increase node height (in inches)
-    G.edge_attr['arrowsize'] = "2.0"  # Increase arrow size for edges
+    G.node_attr['fontsize'] = "24"  # Increase font size for node labels
+    G.node_attr['width'] = "4.0"    # Increase node width (in inches)
+    G.node_attr['height'] = "2.0"   # Increase node height (in inches)
+    G.edge_attr['arrowsize'] = "2.5"  # Increase arrow size for edges
     
     # Add root node
-    G.add_node("Document", shape="ellipse", style="filled", fillcolor="lightblue", label="Document")
+    G.add_node("Document", shape="ellipse", style="filled", fillcolor="lightblue", label=wrap_label("Document"))
     
     # Keep track of node names to ensure uniqueness
     node_counter = {}
@@ -53,7 +71,7 @@ def generate_mermaid_mindmap(text):
             safe_category = "Category_" + str(hash(category) % 10000)
         
         # Add category node
-        G.add_node(safe_category, shape="box", style="filled", fillcolor="lightgreen", label=category)
+        G.add_node(safe_category, shape="box", style="filled", fillcolor="lightgreen", label=wrap_label(category))
         G.add_edge("Document", safe_category)
         
         for value in values:
@@ -78,7 +96,7 @@ def generate_mermaid_mindmap(text):
                 safe_value = f"{safe_value}_{node_counter[node_key]}"
             
             # Add value node
-            G.add_node(safe_value, shape="ellipse", style="filled", fillcolor="lightyellow", label=cleaned_value)
+            G.add_node(safe_value, shape="ellipse", style="filled", fillcolor="lightyellow", label=wrap_label(cleaned_value))
             G.add_edge(safe_category, safe_value)
     
     # Ensure the output directory exists
