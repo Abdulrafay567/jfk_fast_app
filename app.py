@@ -54,10 +54,10 @@ def generate_mermaid_mindmap(text):
     G.graph_attr['nodesep'] = "3.0"  # Further increase horizontal spacing between nodes (in inches)
     
     # Set default node and edge attributes for better readability
-    G.node_attr['fontsize'] = "28"  # Further increase font size for node labels
-    G.node_attr['width'] = "5.0"    # Further increase node width (in inches)
-    G.node_attr['height'] = "2.5"   # Further increase node height (in inches)
-    G.edge_attr['arrowsize'] = "3.0"  # Further increase arrow size for edges
+    G.node_attr['fontsize'] = "40"  # Further increase font size for node labels
+    G.node_attr['width'] = "7"    # Further increase node width (in inches)
+    G.node_attr['height'] = "8"   # Further increase node height (in inches)
+    G.edge_attr['arrowsize'] = "1.5"  # Further increase arrow size for edges
     
     # Add root node
     G.add_node("Document", shape="ellipse", style="filled", fillcolor="lightblue", label=wrap_label("Document"))
