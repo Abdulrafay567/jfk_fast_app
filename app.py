@@ -54,7 +54,7 @@ def generate_mermaid_mindmap(text):
     G.graph_attr['nodesep'] = "3.0"  # Further increase horizontal spacing between nodes (in inches)
     
     # Set default node and edge attributes for better readability
-    G.node_attr['fontsize'] = "40"  # Further increase font size for node labels
+    G.node_attr['fontsize'] = "60"  # Further increase font size for node labels
     G.node_attr['width'] = "7"    # Further increase node width (in inches)
     G.node_attr['height'] = "8"   # Further increase node height (in inches)
     G.edge_attr['arrowsize'] = "1.5"  # Further increase arrow size for edges
@@ -229,7 +229,7 @@ with gr.Blocks() as iface:
         output_wordcloud = gr.Image(label=" Word Cloud")
     with gr.Row():
         generate_mindmap_button = gr.Button("Generate Mind Map")
-        output_mindmap = gr.Gallery(label="Mind Map", height=1000) # Use HTML instead of Textbox
+        output_mindmap = gr.Image(label="Mind Map", height=1000,width=1500) # Use HTML instead of Textbox
 
     generate_mindmap_button.click(
         fn=generate_mermaid_mindmap,
